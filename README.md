@@ -67,7 +67,7 @@ module rom_memory_tb;
     // Inputs
     reg clk;
     reg write_enable;
-    reg [11:0] address;
+    reg [2:0] address;  // Updated to 3-bit address for 000, 001, 010, 011, 100
     reg [7:0] data_in;
 
     // Outputs
@@ -90,20 +90,22 @@ module rom_memory_tb;
         // Initialize inputs
         clk = 0;
         write_enable = 0;
-        address = 0;
-        data_in = 0;
+        address = 3'b000;
+        data_in = 8'd0;
 
         // Write data into memory
-        #10 write_enable = 1; address = 12'd0; data_in = 8'hA5;  // Write 0xA5 at address 0
-        #10 write_enable = 1; address = 12'd1; data_in = 8'h5A;  // Write 0x5A at address 1
-        #10 write_enable = 1; address = 12'd2; data_in = 8'hFF;  // Write 0xFF at address 2
-        #10 write_enable = 1; address = 12'd3; data_in = 8'h00;  // Write 0x00 at address 3
+        #10 write_enable = 1; address = 3'b000; data_in = 8'd142;  // Write 142 at address 000
+        #10 write_enable = 1; address = 3'b001; data_in = 8'd152;  // Write 152 at address 001
+        #10 write_enable = 1; address = 3'b010; data_in = 8'd162;  // Write 162 at address 010
+        #10 write_enable = 1; address = 3'b011; data_in = 8'd172;  // Write 172 at address 011
+        #10 write_enable = 1; address = 3'b100; data_in = 8'd182;  // Write 182 at address 100
 
         // Disable write and start reading from memory
-        #10 write_enable = 0; address = 12'd0;
-        #10 address = 12'd1;
-        #10 address = 12'd2;
-        #10 address = 12'd3;
+        #10 write_enable = 0; address = 3'b000;
+        #10 address = 3'b001;
+        #10 address = 3'b010;
+        #10 address = 3'b011;
+        #10 address = 3'b100;
 
         // Stop the simulation
         #10 $stop;
@@ -111,11 +113,14 @@ module rom_memory_tb;
 
     // Monitor the values for verification
     initial begin
-        $monitor("Time = %0t | Write Enable = %b | Address = %h | Data In = %h | Data Out = %h", 
+        $monitor("Time = %0t | Write Enable = %b | Address = %b | Data In = %d | Data Out = %h", 
                  $time, write_enable, address, data_in, data_out);
     end
 
 endmodule
+
+Output : ![Screenshot 2024-10-19 104743](https://github.com/user-attachments/assets/69bce7e9-b8df-4729-adf3-761887655546)
+
 
 
 Conclusion
